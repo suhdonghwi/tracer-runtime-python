@@ -1,0 +1,13 @@
+[project]
+name = "tracer-runtime-python"
+version = "0.1.0"
+authors = [
+  { name="Suh Dong Hwi", email="hwidongsuh@gmail.com" },
+]
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=61.0"]
