@@ -10,7 +10,7 @@ static PyObject *begin_expr(PyObject *self, PyObject *const *args,
                             Py_ssize_t nargs) {
   PyObject *node_location = args[0];
 
-  /* node_stack.push(node_location); */
+  node_stack.push(node_location);
 
   Py_INCREF(node_location);
   return node_location;
@@ -21,40 +21,73 @@ static PyObject *end_expr(PyObject *self, PyObject *const *args,
   PyObject *node_location = args[0];
   PyObject *expr_result = args[1];
 
-  /* node_stack.pop(); */
+  node_stack.pop();
 
   Py_INCREF(expr_result);
   return expr_result;
 }
 
-static PyObject *others(PyObject *self, PyObject *args) { Py_RETURN_NONE; }
+static PyObject *begin_stmt(PyObject *self, PyObject *const *args,
+                            Py_ssize_t nargs) {
+  PyObject *node_location = args[0];
+  node_stack.push(node_location);
+
+  Py_RETURN_NONE;
+}
+
+static PyObject *end_stmt(PyObject *self, PyObject *const *args,
+                          Py_ssize_t nargs) {
+  node_stack.pop();
+
+  Py_RETURN_NONE;
+}
+
+static PyObject *begin_frame(PyObject *self, PyObject *const *args,
+                             Py_ssize_t nargs) {
+  PyObject *node_location = args[0];
+
+  node_stack.push(node_location);
+
+  Py_RETURN_NONE;
+}
+
+static PyObject *end_frame(PyObject *self, PyObject *const *args,
+                           Py_ssize_t nargs) {
+  PyObject *node_location = args[0];
+
+  node_stack.pop();
+
+  Py_RETURN_NONE;
+}
+
+static PyObject *noop(PyObject *self, PyObject *args) { Py_RETURN_NONE; }
 
 static PyMethodDef Methods[] = {
-    {"begin_module", others, METH_VARARGS},
+    {"begin_module", (PyCFunction)begin_frame, METH_FASTCALL},
     {
         "end_module",
-        others,
-        METH_VARARGS,
+        (PyCFunction)end_frame,
+        METH_FASTCALL,
     },
     {
         "begin_func",
-        others,
-        METH_VARARGS,
+        (PyCFunction)begin_frame,
+        METH_FASTCALL,
     },
     {
         "end_func",
-        others,
-        METH_VARARGS,
+        (PyCFunction)end_frame,
+        METH_FASTCALL,
     },
     {
         "begin_stmt",
-        others,
-        METH_VARARGS,
+        (PyCFunction)begin_stmt,
+        METH_FASTCALL,
     },
     {
         "end_stmt",
-        others,
-        METH_VARARGS,
+        (PyCFunction)end_stmt,
+        METH_FASTCALL,
     },
     {
         "begin_expr",
