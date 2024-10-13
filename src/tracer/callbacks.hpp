@@ -3,7 +3,7 @@
 #include <Python.h>
 
 namespace tracer {
-namespace events {
+namespace callbacks {
 
 PyObject *begin_expr(PyObject *self, PyObject *const *args, Py_ssize_t nargs);
 PyObject *end_expr(PyObject *self, PyObject *const *args, Py_ssize_t nargs);

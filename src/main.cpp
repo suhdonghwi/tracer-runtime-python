@@ -1,44 +1,45 @@
 #include <Python.h>
 
-#include "tracer/events.hpp"
+#include "tracer/callbacks.hpp"
 
 static PyObject *TracerRuntimeError;
 
 static PyMethodDef Methods[] = {
-    {"begin_module", (PyCFunction)tracer::events::begin_frame, METH_FASTCALL},
+    {"begin_module", (PyCFunction)tracer::callbacks::begin_frame,
+     METH_FASTCALL},
     {
         "end_module",
-        (PyCFunction)tracer::events::end_frame,
+        (PyCFunction)tracer::callbacks::end_frame,
         METH_FASTCALL,
     },
     {
         "begin_func",
-        (PyCFunction)tracer::events::begin_frame,
+        (PyCFunction)tracer::callbacks::begin_frame,
         METH_FASTCALL,
     },
     {
         "end_func",
-        (PyCFunction)tracer::events::end_frame,
+        (PyCFunction)tracer::callbacks::end_frame,
         METH_FASTCALL,
     },
     {
         "begin_stmt",
-        (PyCFunction)tracer::events::begin_stmt,
+        (PyCFunction)tracer::callbacks::begin_stmt,
         METH_FASTCALL,
     },
     {
         "end_stmt",
-        (PyCFunction)tracer::events::end_stmt,
+        (PyCFunction)tracer::callbacks::end_stmt,
         METH_FASTCALL,
     },
     {
         "begin_expr",
-        (PyCFunction)tracer::events::begin_expr,
+        (PyCFunction)tracer::callbacks::begin_expr,
         METH_FASTCALL,
     },
     {
         "end_expr",
-        (PyCFunction)tracer::events::end_expr,
+        (PyCFunction)tracer::callbacks::end_expr,
         METH_FASTCALL,
     },
     {NULL, NULL, 0, NULL}, // sentinel
