@@ -4,7 +4,7 @@ from setuptools import setup
 
 module = Extension(
     "tracer_runtime",
-    sources=["src/spam.cpp"],
+    sources=["src/main.cpp", "src/tracer/events.cpp"],
     extra_compile_args=["-Wall", "-std=c++20", "-O3"],
     language="c++",
 )

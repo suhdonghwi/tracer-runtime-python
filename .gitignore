@@ -1,3 +1,4 @@
 dist/
 *.egg-info/
 compile_flags.txt
+.DS_Store
