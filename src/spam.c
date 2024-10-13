@@ -7,29 +7,21 @@
 static PyObject *TracerRuntimeError;
 
 static PyObject *begin_expr(PyObject *self, PyObject *args) {
-  const char *file_id;
-  PyObject *range_tuple = NULL;
-  int begin, end;
+  PyObject *node_location = NULL;
 
-  if (!PyArg_ParseTuple(args, "(s(ii))", &file_id, &begin, &end)) {
+  if (!PyArg_ParseTuple(args, "O", &node_location)) {
     return NULL;
   }
 
-  PyObject *arg = NULL;
-  PyArg_ParseTuple(args, "O", &arg);
-
-  Py_INCREF(arg);
-  return arg;
+  Py_INCREF(node_location);
+  return node_location;
 }
 
 static PyObject *end_expr(PyObject *self, PyObject *args) {
-  const char *file_id;
-  PyObject *range_tuple = NULL;
-  int begin, end;
+  PyObject *node_location = NULL;
   PyObject *expr_result = NULL;
 
-  if (!PyArg_ParseTuple(args, "(s(ii))O", &file_id, &begin, &end,
-                        &expr_result)) {
+  if (!PyArg_ParseTuple(args, "OO", &node_location, &expr_result)) {
     return NULL;
   }
 
@@ -37,18 +29,7 @@ static PyObject *end_expr(PyObject *self, PyObject *args) {
   return expr_result;
 }
 
-static PyObject *others(PyObject *self, PyObject *args) {
-  const char *file_id;
-  PyObject *range_tuple = NULL;
-  int begin, end;
-
-  // Parse the arguments: expecting a tuple (string, tuple of two integers)
-  if (!PyArg_ParseTuple(args, "(s(ii))", &file_id, &begin, &end)) {
-    return NULL;
-  }
-
-  Py_RETURN_NONE;
-}
+static PyObject *others(PyObject *self, PyObject *args) { Py_RETURN_NONE; }
 
 static PyMethodDef Methods[] = {
     {"begin_module", begin_expr, METH_VARARGS},
