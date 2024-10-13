@@ -1,29 +1,27 @@
 #include <Python.h>
 
-#include <stdlib.h>
-
-#include "cJSON.h"
+#include <stack>
 
 static PyObject *TracerRuntimeError;
 
-static PyObject *begin_expr(PyObject *self, PyObject *args) {
-  PyObject *node_location = NULL;
+static std::stack<PyObject *> node_stack;
 
-  if (!PyArg_ParseTuple(args, "O", &node_location)) {
-    return NULL;
-  }
+static PyObject *begin_expr(PyObject *self, PyObject *const *args,
+                            Py_ssize_t nargs) {
+  PyObject *node_location = args[0];
+
+  /* node_stack.push(node_location); */
 
   Py_INCREF(node_location);
   return node_location;
 }
 
-static PyObject *end_expr(PyObject *self, PyObject *args) {
-  PyObject *node_location = NULL;
-  PyObject *expr_result = NULL;
+static PyObject *end_expr(PyObject *self, PyObject *const *args,
+                          Py_ssize_t nargs) {
+  PyObject *node_location = args[0];
+  PyObject *expr_result = args[1];
 
-  if (!PyArg_ParseTuple(args, "OO", &node_location, &expr_result)) {
-    return NULL;
-  }
+  /* node_stack.pop(); */
 
   Py_INCREF(expr_result);
   return expr_result;
@@ -32,7 +30,7 @@ static PyObject *end_expr(PyObject *self, PyObject *args) {
 static PyObject *others(PyObject *self, PyObject *args) { Py_RETURN_NONE; }
 
 static PyMethodDef Methods[] = {
-    {"begin_module", begin_expr, METH_VARARGS},
+    {"begin_module", others, METH_VARARGS},
     {
         "end_module",
         others,
@@ -60,13 +58,13 @@ static PyMethodDef Methods[] = {
     },
     {
         "begin_expr",
-        begin_expr,
-        METH_VARARGS,
+        (PyCFunction)begin_expr,
+        METH_FASTCALL,
     },
     {
         "end_expr",
-        end_expr,
-        METH_VARARGS,
+        (PyCFunction)end_expr,
+        METH_FASTCALL,
     },
     {NULL, NULL, 0, NULL}, // sentinel
 };

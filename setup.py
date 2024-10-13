@@ -3,7 +3,10 @@ from setuptools import setup
 
 
 module = Extension(
-    "tracer_runtime", sources=["src/spam.c", "src/cJSON.c"], extra_compile_args=["-Wall"],
+    "tracer_runtime",
+    sources=["src/spam.cpp"],
+    extra_compile_args=["-Wall", "-std=c++20", "-O3"],
+    language="c++",
 )
 
 setup(
