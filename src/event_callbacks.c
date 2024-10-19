@@ -1,52 +1,43 @@
 #define STB_DS_IMPLEMENTATION
-#include "stb_ds.h"
-
-#include "yyjson.h"
+#include "libs/stb_ds.h"
+#include "libs/yyjson.h"
 
 #include "event_callbacks.h"
 #include "globals.h"
+
+yyjson_mut_val *pyobject_to_node_location_json(PyObject *node_location_object) {
+  char *file_id;
+  Py_ssize_t begin_offset, end_offset;
+
+  PyArg_ParseTuple(node_location_object, "snn", &file_id, &begin_offset,
+                   &end_offset);
+
+  yyjson_mut_val *node_location = yyjson_mut_obj(event_logs_json_doc);
+  yyjson_mut_obj_add_str(event_logs_json_doc, node_location, "file_id",
+                         file_id);
+  yyjson_mut_obj_add_uint(event_logs_json_doc, node_location, "begin_offset",
+                          (uint32_t)begin_offset);
+  yyjson_mut_obj_add_uint(event_logs_json_doc, node_location, "end_offset",
+                          (uint32_t)end_offset);
+
+  return node_location;
+}
 
 PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
   yyjson_mut_val *event = yyjson_mut_obj(event_logs_json_doc);
   yyjson_mut_obj_add_str(event_logs_json_doc, event, "type", "begin_frame");
 
-  {
-    PyObject *frame_node_location_object = args[0];
+  PyObject *frame_node_location_object = args[0];
+  yyjson_mut_val *frame_node_location =
+      pyobject_to_node_location_json(frame_node_location_object);
 
-    char *file_id;
-    Py_ssize_t begin_offset, end_offset;
-
-    PyArg_ParseTuple(frame_node_location_object, "snn", &file_id, &begin_offset,
-                     &end_offset);
-
-    yyjson_mut_val *frame_node_location = yyjson_mut_obj(event_logs_json_doc);
-    yyjson_mut_obj_add_str(event_logs_json_doc, frame_node_location, "file_id",
-                           file_id);
-    yyjson_mut_obj_add_uint(event_logs_json_doc, frame_node_location,
-                            "begin_offset", (uint32_t)begin_offset);
-    yyjson_mut_obj_add_uint(event_logs_json_doc, frame_node_location,
-                            "end_offset", (uint32_t)end_offset);
-
-    yyjson_mut_obj_add_val(event_logs_json_doc, event, "node_location",
-                           frame_node_location);
-  }
+  yyjson_mut_obj_add_val(event_logs_json_doc, event, "node_location",
+                         frame_node_location);
 
   if (arrlen(node_location_object_stack) > 0) {
     PyObject *last_node_location_object = arrlast(node_location_object_stack);
-
-    char *file_id;
-    Py_ssize_t begin_offset, end_offset;
-
-    PyArg_ParseTuple(last_node_location_object, "snn", &file_id, &begin_offset,
-                     &end_offset);
-
-    yyjson_mut_val *caller_node_location = yyjson_mut_obj(event_logs_json_doc);
-    yyjson_mut_obj_add_str(event_logs_json_doc, caller_node_location, "file_id",
-                           file_id);
-    yyjson_mut_obj_add_uint(event_logs_json_doc, caller_node_location,
-                            "begin_offset", (uint32_t)begin_offset);
-    yyjson_mut_obj_add_uint(event_logs_json_doc, caller_node_location,
-                            "end_offset", (uint32_t)end_offset);
+    yyjson_mut_val *caller_node_location =
+        pyobject_to_node_location_json(last_node_location_object);
 
     yyjson_mut_obj_add_val(event_logs_json_doc, event, "caller_node_location",
                            caller_node_location);
