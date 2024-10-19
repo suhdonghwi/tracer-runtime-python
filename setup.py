@@ -6,9 +6,8 @@ from setuptools import setup
 
 module = Extension(
     "tracer_runtime",
-    sources=[Path(f).as_posix() for f in Path("src").rglob("*.cpp") if f.is_file()],
-    extra_compile_args=["-Wall", "-Werror", "-std=c++20", "-O3"],
-    language="c++",
+    sources=[Path(f).as_posix() for f in Path("src").rglob("*.c") if f.is_file()],
+    extra_compile_args=["-Wall", "-Werror", "-O3"],
 )
 
 setup(
