@@ -1,11 +1,10 @@
 #pragma once
 
-namespace tracer {
-class Span {
-public:
-  int begin_offset;
-  int end_offset;
+#include <cstddef>
 
-  Span(int begin_offset, int end_offset);
+namespace tracer {
+struct Span {
+  std::size_t begin_offset;
+  std::size_t end_offset;
 };
 } // namespace tracer

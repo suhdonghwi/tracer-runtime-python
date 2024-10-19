@@ -49,26 +49,28 @@ PyObject *end_stmt(PyObject *self, PyObject *const *args, Py_ssize_t nargs) {
 
 PyObject *begin_frame(PyObject *self, PyObject *const *args, Py_ssize_t nargs) {
   PyObject *frame_node_location_obj = args[0];
-  NodeLocation frame_node_location(frame_node_location_obj);
+  auto frame_node_location =
+      NodeLocation::from_pyobject(frame_node_location_obj);
 
-  trace_builder.start_frame(frame_node_location);
+  auto caller_node_location =
+      node_location_stack.empty()
+          ? std::nullopt
+          : std::optional<NodeLocation>(
+                NodeLocation::from_pyobject(node_location_stack.top()));
+
+  trace_builder.start_frame(frame_node_location, caller_node_location);
 
   Py_RETURN_NONE;
 }
 
 PyObject *end_frame(PyObject *self, PyObject *const *args, Py_ssize_t nargs) {
-  std::optional<NodeLocation> caller_node_location;
-  if (!node_location_stack.empty()) {
-    caller_node_location =
-        std::optional<NodeLocation>(node_location_stack.top());
-  }
-
-  auto frame_trace = trace_builder.end_frame(caller_node_location);
+  trace_builder.end_frame();
 
   if (node_location_stack.empty()) {
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-    frame_trace.Accept(writer);
+
+    trace_builder.accept(writer);
 
     std::ofstream file("trace.json");
     file << buffer.GetString();
@@ -77,5 +79,5 @@ PyObject *end_frame(PyObject *self, PyObject *const *args, Py_ssize_t nargs) {
   Py_RETURN_NONE;
 }
 
-} // namespace events
+} // namespace callbacks
 } // namespace tracer
