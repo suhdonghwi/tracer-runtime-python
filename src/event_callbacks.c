@@ -1,14 +1,14 @@
-#include "yyjson.h"
 #define STB_DS_IMPLEMENTATION
 #include "stb_ds.h"
 
-#include "event_callbacks.h"
+#include "yyjson.h"
 
-PyObject **node_location_object_stack;
+#include "event_callbacks.h"
+#include "globals.h"
 
 PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
-  yyjson_mut_val *event = yyjson_mut_obj(doc);
-  yyjson_mut_obj_add_str(doc, event, "type", "begin_frame");
+  yyjson_mut_val *event = yyjson_mut_obj(event_logs_json_doc);
+  yyjson_mut_obj_add_str(event_logs_json_doc, event, "type", "begin_frame");
 
   {
     PyObject *frame_node_location_object = args[0];
@@ -19,14 +19,16 @@ PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
     PyArg_ParseTuple(frame_node_location_object, "snn", &file_id, &begin_offset,
                      &end_offset);
 
-    yyjson_mut_val *frame_node_location = yyjson_mut_obj(doc);
-    yyjson_mut_obj_add_str(doc, frame_node_location, "file_id", file_id);
-    yyjson_mut_obj_add_uint(doc, frame_node_location, "begin_offset",
-                            (uint32_t)begin_offset);
-    yyjson_mut_obj_add_uint(doc, frame_node_location, "end_offset",
-                            (uint32_t)end_offset);
+    yyjson_mut_val *frame_node_location = yyjson_mut_obj(event_logs_json_doc);
+    yyjson_mut_obj_add_str(event_logs_json_doc, frame_node_location, "file_id",
+                           file_id);
+    yyjson_mut_obj_add_uint(event_logs_json_doc, frame_node_location,
+                            "begin_offset", (uint32_t)begin_offset);
+    yyjson_mut_obj_add_uint(event_logs_json_doc, frame_node_location,
+                            "end_offset", (uint32_t)end_offset);
 
-    yyjson_mut_obj_add_val(doc, event, "node_location", frame_node_location);
+    yyjson_mut_obj_add_val(event_logs_json_doc, event, "node_location",
+                           frame_node_location);
   }
 
   if (arrlen(node_location_object_stack) > 0) {
@@ -38,33 +40,34 @@ PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
     PyArg_ParseTuple(last_node_location_object, "snn", &file_id, &begin_offset,
                      &end_offset);
 
-    yyjson_mut_val *caller_node_location = yyjson_mut_obj(doc);
-    yyjson_mut_obj_add_str(doc, caller_node_location, "file_id", file_id);
-    yyjson_mut_obj_add_uint(doc, caller_node_location, "begin_offset",
-                            (uint32_t)begin_offset);
-    yyjson_mut_obj_add_uint(doc, caller_node_location, "end_offset",
-                            (uint32_t)end_offset);
+    yyjson_mut_val *caller_node_location = yyjson_mut_obj(event_logs_json_doc);
+    yyjson_mut_obj_add_str(event_logs_json_doc, caller_node_location, "file_id",
+                           file_id);
+    yyjson_mut_obj_add_uint(event_logs_json_doc, caller_node_location,
+                            "begin_offset", (uint32_t)begin_offset);
+    yyjson_mut_obj_add_uint(event_logs_json_doc, caller_node_location,
+                            "end_offset", (uint32_t)end_offset);
 
-    yyjson_mut_obj_add_val(doc, event, "caller_node_location",
+    yyjson_mut_obj_add_val(event_logs_json_doc, event, "caller_node_location",
                            caller_node_location);
   } else {
-    yyjson_mut_obj_add_null(doc, event, "caller_node_location");
+    yyjson_mut_obj_add_null(event_logs_json_doc, event, "caller_node_location");
   }
 
-  yyjson_mut_arr_append(events, event);
+  yyjson_mut_arr_append(event_logs_json, event);
   Py_RETURN_NONE;
 }
 
 PyObject *event_callback_end_frame(PyObject *self, PyObject **args) {
-  yyjson_mut_val *event = yyjson_mut_obj(doc);
-  yyjson_mut_obj_add_str(doc, event, "type", "end_frame");
+  yyjson_mut_val *event_json = yyjson_mut_obj(event_logs_json_doc);
+  yyjson_mut_obj_add_str(event_logs_json_doc, event_json, "type", "end_frame");
 
-  yyjson_mut_arr_append(events, event);
+  yyjson_mut_arr_append(event_logs_json, event_json);
 
   if (arrlen(node_location_object_stack) == 0) {
-    yyjson_write_flag flg = YYJSON_WRITE_PRETTY | YYJSON_WRITE_ESCAPE_UNICODE;
     yyjson_write_err err;
-    yyjson_mut_write_file("/tmp/trace.json", doc, flg, NULL, &err);
+    yyjson_mut_write_file("/tmp/trace.json", event_logs_json_doc, 0, NULL,
+                          &err);
   }
 
   Py_RETURN_NONE;

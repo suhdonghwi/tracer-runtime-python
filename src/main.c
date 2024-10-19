@@ -1,6 +1,7 @@
 #include <Python.h>
 
 #include "event_callbacks.h"
+#include "globals.h"
 
 static PyObject *TracerRuntimeError;
 
@@ -53,11 +54,9 @@ static PyModuleDef tracer_runtime_module = {
 };
 
 PyMODINIT_FUNC PyInit_tracer_runtime() {
-  PyObject *module;
+  init_event_logs_json();
 
-  doc = yyjson_mut_doc_new(NULL);
-  events = yyjson_mut_arr(doc);
-  yyjson_mut_doc_set_root(doc, events);
+  PyObject *module;
 
   module = PyModule_Create(&tracer_runtime_module);
   if (module == NULL) {
