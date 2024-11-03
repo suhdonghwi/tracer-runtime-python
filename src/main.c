@@ -45,25 +45,25 @@ static PyMethodDef Methods[] = {
     {NULL, NULL, 0, NULL}, // sentinel
 };
 
-static PyModuleDef tracer_runtime_module = {
+static PyModuleDef tracer_runtime_python_module = {
     PyModuleDef_HEAD_INIT,
-    "tracer_runtime",
+    "tracer_runtime_python",
     "An example Python C extension module.",
     -1,
     Methods,
 };
 
-PyMODINIT_FUNC PyInit_tracer_runtime() {
+PyMODINIT_FUNC PyInit_tracer_runtime_python() {
   event_log_init();
 
   PyObject *module;
 
-  module = PyModule_Create(&tracer_runtime_module);
+  module = PyModule_Create(&tracer_runtime_python_module);
   if (module == NULL) {
     return NULL;
   }
 
-  TracerRuntimeError = PyErr_NewException("tracer_runtime.Error", NULL, NULL);
+  TracerRuntimeError = PyErr_NewException("tracer_runtime_python.Error", NULL, NULL);
   Py_INCREF(TracerRuntimeError);
   PyModule_AddObject(module, "Error", TracerRuntimeError);
   return module;

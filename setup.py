@@ -5,13 +5,13 @@ from setuptools import setup
 
 
 module = Extension(
-    "tracer_runtime",
+    "tracer_runtime_python",
     sources=[Path(f).as_posix() for f in Path("src").rglob("*.c") if f.is_file()],
     extra_compile_args=["-Wall", "-Werror", "-O3"],
 )
 
 setup(
-    name="tracer_runtime",
+    name="tracer_runtime_python",
     version="1.0.0",
     description="An example Python C extension module",
     ext_modules=[module],

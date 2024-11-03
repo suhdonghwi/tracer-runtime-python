@@ -29,7 +29,7 @@ PyObject *event_callback_end_frame(PyObject *self, PyObject **args) {
   event_log_end_frame();
 
   if (arrlen(node_location_object_stack) == 0) {
-    event_log_write("/tmp/trace.json");
+    event_log_write("./event_log.json");
   }
 
   Py_RETURN_NONE;
