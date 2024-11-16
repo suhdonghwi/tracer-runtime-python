@@ -3,8 +3,6 @@
 #include "event_callbacks.h"
 #include "event_log.h"
 
-static PyObject *TracerRuntimeError;
-
 static PyMethodDef Methods[] = {
     {"begin_module", (PyCFunction)event_callback_begin_frame, METH_FASTCALL},
     {
@@ -56,15 +54,5 @@ static PyModuleDef tracer_runtime_python_module = {
 PyMODINIT_FUNC PyInit_tracer_runtime_python() {
   event_log_init();
 
-  PyObject *module;
-
-  module = PyModule_Create(&tracer_runtime_python_module);
-  if (module == NULL) {
-    return NULL;
-  }
-
-  TracerRuntimeError = PyErr_NewException("tracer_runtime_python.Error", NULL, NULL);
-  Py_INCREF(TracerRuntimeError);
-  PyModule_AddObject(module, "Error", TracerRuntimeError);
-  return module;
+  return PyModule_Create(&tracer_runtime_python_module);
 }
