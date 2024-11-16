@@ -1,5 +1,7 @@
 #include "event_log.h"
 
+static yyjson_mut_val *event_log_json;
+
 void event_log_init() {
   event_log_json_doc = yyjson_mut_doc_new(NULL);
   event_log_json = yyjson_mut_arr(event_log_json_doc);

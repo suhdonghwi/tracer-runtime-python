@@ -3,7 +3,6 @@
 #include "libs/yyjson.h"
 
 yyjson_mut_doc *event_log_json_doc;
-yyjson_mut_val *event_log_json;
 
 void event_log_init();
 

@@ -6,7 +6,7 @@
 #include "event_log.h"
 #include "node_location.h"
 
-PyObject **node_location_object_stack;
+static PyObject **node_location_object_stack;
 
 PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
   PyObject *frame_node_location_object = args[0];
