@@ -1,13 +1,11 @@
 #pragma once
 
-#include "libs/yyjson.h"
-
-yyjson_mut_doc *event_log_json_doc;
+#include <Python.h>
 
 void event_log_init();
 
-void event_log_begin_frame(yyjson_mut_val *frame_node_location_json,
-                           yyjson_mut_val *caller_node_location_json);
+void event_log_begin_frame(PyObject *frame_node_location_object,
+                           PyObject *caller_node_location_object);
 void event_log_end_frame();
 
-void event_log_write(const char *file_path);
+void event_log_write();
