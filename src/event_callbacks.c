@@ -2,7 +2,7 @@
 #include "libs/stb_ds.h"
 
 #include "event_callbacks.h"
-#include "event_log.h"
+#include "execution_log.h"
 
 static PyObject **node_location_object_stack;
 
@@ -14,13 +14,13 @@ PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
     caller_node_location_object = arrlast(node_location_object_stack);
   }
 
-  event_log_begin_frame(frame_node_location_object,
-                        caller_node_location_object);
+  execution_log_begin_frame(frame_node_location_object,
+                            caller_node_location_object);
   Py_RETURN_NONE;
 }
 
 PyObject *event_callback_end_frame(PyObject *self, PyObject **args) {
-  event_log_end_frame();
+  execution_log_end_frame();
 
   Py_RETURN_NONE;
 }

@@ -1,6 +1,7 @@
-#include "event_callbacks.h"
-#include "event_log.h"
 #include <Python.h>
+
+#include "event_callbacks.h"
+#include "execution_log.h"
 
 static PyMethodDef Methods[] = {
     {"begin_module", (PyCFunction)event_callback_begin_frame, METH_FASTCALL},
@@ -51,8 +52,8 @@ static PyModuleDef tracer_runtime_python_module = {
 };
 
 PyMODINIT_FUNC PyInit_tracer_runtime_python() {
-  event_log_init();
-  Py_AtExit(event_log_write);
+  execution_log_init();
+  Py_AtExit(execution_log_write);
 
   return PyModule_Create(&tracer_runtime_python_module);
 }
