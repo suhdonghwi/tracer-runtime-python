@@ -40,6 +40,8 @@ PyObject *event_callback_end_stmt(PyObject *self, PyObject **args) {
 
 PyObject *event_callback_begin_expr(PyObject *self, PyObject **args) {
   PyObject *source_location_object = args[0];
+
+  Py_INCREF(source_location_object);
   arrpush(source_location_object_stack, source_location_object);
 
   Py_INCREF(source_location_object);
@@ -47,7 +49,9 @@ PyObject *event_callback_begin_expr(PyObject *self, PyObject **args) {
 }
 
 PyObject *event_callback_end_expr(PyObject *self, PyObject **args) {
-  arrpop(source_location_object_stack);
+  PyObject *popped_source_location_object =
+      arrpop(source_location_object_stack);
+  Py_DECREF(popped_source_location_object);
 
   PyObject *expr_result_object = args[1];
 
