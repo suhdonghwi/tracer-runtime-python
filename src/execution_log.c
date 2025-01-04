@@ -15,29 +15,29 @@ void execution_log_begin_frame(
     PyObject *caller_source_location_object
 ) {
   yyjson_mut_val *frame_source_location_json = source_location_py_to_json(
-      frame_source_location_object,
-      execution_log_json_doc
+      execution_log_json_doc,
+      frame_source_location_object
   );
 
   yyjson_mut_val *caller_source_location_json = NULL;
   if (caller_source_location_object != NULL) {
     caller_source_location_json = source_location_py_to_json(
-        caller_source_location_object,
-        execution_log_json_doc
+        execution_log_json_doc,
+        caller_source_location_object
     );
   }
 
-  yyjson_mut_val *event_item_json = yyjson_mut_obj(execution_log_json_doc);
+  yyjson_mut_val *log_item_json = yyjson_mut_obj(execution_log_json_doc);
   yyjson_mut_obj_add_str(
       execution_log_json_doc,
-      event_item_json,
+      log_item_json,
       "type",
       "begin_frame"
   );
 
   yyjson_mut_obj_add_val(
       execution_log_json_doc,
-      event_item_json,
+      log_item_json,
       "source_location",
       frame_source_location_json
   );
@@ -45,31 +45,31 @@ void execution_log_begin_frame(
   if (caller_source_location_json == NULL) {
     yyjson_mut_obj_add_null(
         execution_log_json_doc,
-        event_item_json,
+        log_item_json,
         "caller_source_location"
     );
   } else {
     yyjson_mut_obj_add_val(
         execution_log_json_doc,
-        event_item_json,
+        log_item_json,
         "caller_source_location",
         caller_source_location_json
     );
   }
 
-  yyjson_mut_arr_append(execution_log_json, event_item_json);
+  yyjson_mut_arr_append(execution_log_json, log_item_json);
 }
 
 void execution_log_end_frame() {
-  yyjson_mut_val *event_json = yyjson_mut_obj(execution_log_json_doc);
+  yyjson_mut_val *log_item_json = yyjson_mut_obj(execution_log_json_doc);
   yyjson_mut_obj_add_str(
       execution_log_json_doc,
-      event_json,
+      log_item_json,
       "type",
       "end_frame"
   );
 
-  yyjson_mut_arr_append(execution_log_json, event_json);
+  yyjson_mut_arr_append(execution_log_json, log_item_json);
 }
 
 void execution_log_write() {
@@ -80,6 +80,6 @@ void execution_log_write() {
       yyjson_mut_write_file(file_path, execution_log_json_doc, 0, NULL, &err);
 
   if (!write_success) {
-    fprintf(stderr, "Failed to write event log to file: %s\n", err.msg);
+    fprintf(stderr, "Failed to write execution log to file: %s\n", err.msg);
   }
 }

@@ -1,12 +1,12 @@
 #define STB_DS_IMPLEMENTATION
 #include "libs/stb_ds.h"
 
-#include "event_callbacks.h"
+#include "execution_callbacks.h"
 #include "execution_log.h"
 
 static PyObject **source_location_object_stack;
 
-PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
+PyObject *callback_begin_frame(PyObject *self, PyObject **args) {
   PyObject *frame_source_location_object = args[0];
 
   PyObject *caller_source_location_object = NULL;
@@ -21,26 +21,26 @@ PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
   Py_RETURN_NONE;
 }
 
-PyObject *event_callback_end_frame(PyObject *self, PyObject **args) {
+PyObject *callback_end_frame(PyObject *self, PyObject **args) {
   execution_log_end_frame();
 
   Py_RETURN_NONE;
 }
 
-PyObject *event_callback_begin_stmt(PyObject *self, PyObject **args) {
+PyObject *callback_begin_stmt(PyObject *self, PyObject **args) {
   PyObject *source_location_object = args[0];
   arrpush(source_location_object_stack, source_location_object);
 
   Py_RETURN_NONE;
 }
 
-PyObject *event_callback_end_stmt(PyObject *self, PyObject **args) {
+PyObject *callback_end_stmt(PyObject *self, PyObject **args) {
   arrpop(source_location_object_stack);
 
   Py_RETURN_NONE;
 }
 
-PyObject *event_callback_begin_expr(PyObject *self, PyObject **args) {
+PyObject *callback_begin_expr(PyObject *self, PyObject **args) {
   PyObject *source_location_object = args[0];
 
   Py_INCREF(source_location_object);
@@ -50,7 +50,7 @@ PyObject *event_callback_begin_expr(PyObject *self, PyObject **args) {
   return source_location_object;
 }
 
-PyObject *event_callback_end_expr(PyObject *self, PyObject **args) {
+PyObject *callback_end_expr(PyObject *self, PyObject **args) {
   PyObject *popped_source_location_object =
       arrpop(source_location_object_stack);
   Py_DECREF(popped_source_location_object);

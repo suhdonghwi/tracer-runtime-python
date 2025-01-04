@@ -1,43 +1,43 @@
 #include <Python.h>
 
-#include "event_callbacks.h"
+#include "execution_callbacks.h"
 #include "execution_log.h"
 
 static PyMethodDef Methods[] = {
-    {"begin_module", (PyCFunction)event_callback_begin_frame, METH_FASTCALL},
+    {"begin_module", (PyCFunction)callback_begin_frame, METH_FASTCALL},
     {
         "end_module",
-        (PyCFunction)event_callback_end_frame,
+        (PyCFunction)callback_end_frame,
         METH_FASTCALL,
     },
     {
         "begin_func",
-        (PyCFunction)event_callback_begin_frame,
+        (PyCFunction)callback_begin_frame,
         METH_FASTCALL,
     },
     {
         "end_func",
-        (PyCFunction)event_callback_end_frame,
+        (PyCFunction)callback_end_frame,
         METH_FASTCALL,
     },
     {
         "begin_stmt",
-        (PyCFunction)event_callback_begin_stmt,
+        (PyCFunction)callback_begin_stmt,
         METH_FASTCALL,
     },
     {
         "end_stmt",
-        (PyCFunction)event_callback_end_stmt,
+        (PyCFunction)callback_end_stmt,
         METH_FASTCALL,
     },
     {
         "begin_expr",
-        (PyCFunction)event_callback_begin_expr,
+        (PyCFunction)callback_begin_expr,
         METH_FASTCALL,
     },
     {
         "end_expr",
-        (PyCFunction)event_callback_end_expr,
+        (PyCFunction)callback_end_expr,
         METH_FASTCALL,
     },
     {NULL, NULL, 0, NULL}, // sentinel
