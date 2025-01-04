@@ -14,8 +14,10 @@ PyObject *event_callback_begin_frame(PyObject *self, PyObject **args) {
     caller_source_location_object = arrlast(source_location_object_stack);
   }
 
-  execution_log_begin_frame(frame_source_location_object,
-                            caller_source_location_object);
+  execution_log_begin_frame(
+      frame_source_location_object,
+      caller_source_location_object
+  );
   Py_RETURN_NONE;
 }
 

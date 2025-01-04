@@ -1,0 +1,8 @@
+BasedOnStyle: LLVM
+
+BinPackArguments: false
+AllowAllArgumentsOnNextLine: false
+AlignAfterOpenBracket: BlockIndent
+
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
