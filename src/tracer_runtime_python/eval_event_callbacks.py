@@ -1,3 +1,4 @@
+import sys
 from typing import Any, Optional
 
 from .eval_event_log import (
@@ -35,3 +36,10 @@ def callback_begin_expr(source_location: Any) -> Any:
 def callback_end_expr(source_location: Any, expr_result: Any) -> Any:
     source_location_stack.pop()
     return expr_result
+
+
+def callback_stdout(data: str) -> None:
+    if not sys.__stdout__:
+        return
+
+    sys.__stdout__.write("User tried to print: " + data + "\n")
