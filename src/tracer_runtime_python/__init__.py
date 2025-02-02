@@ -4,10 +4,10 @@ Mirrors the public API from the C extension.
 """
 
 # 1) Import the log initialization so that it happens on import
-from .execution_log import execution_log_init
+from .eval_event_log import log_init
 
 # 2) Import callbacks
-from .execution_callbacks import (
+from .eval_event_callbacks import (
     callback_begin_frame,
     callback_end_frame,
     callback_begin_stmt,
@@ -30,4 +30,4 @@ begin_expr = callback_begin_expr
 end_expr = callback_end_expr
 
 # 4) Initialize the log once the package is loaded
-execution_log_init()
+log_init()
